@@ -1,0 +1,13 @@
+{
+  "apps" : [{
+    "name"      : "elastic-api",
+    "script"    : "bin/www",
+    "exec_mode" : "fork_mode",
+    "instances" : 1,
+    "env": {
+    },
+    "env_production" : {
+      "NODE_ENV": "production"
+    }
+  }]
+}

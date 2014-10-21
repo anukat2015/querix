@@ -1,0 +1,66 @@
+#!/usr/bin/env node
+var log = require('log4js').getLogger('Initialize');
+var async = require('async');
+var _ = require('underscore');
+var program = require('commander');
+var config = require('../config/config');
+var overview = require('../services/overview');
+
+function collect(val, memo) {
+  memo.push(val);
+  return memo;
+}
+
+program.version('0.1.0')
+  .option('-t, --type [type]', 'only index a specific type (repeatable)', collect, [])
+  .option('-p, --production [production]', 'only index a specific production (repeatable)', collect, [])
+  .option('-I, --no-init', 'skip initializing (and dropping) the indexes')
+  .option('-d, --drop', 'drop indexes and types before indexing');
+program.on('--help', function() {
+  console.log('  Examples:\n');
+  console.log('    $ init -p myProduction');
+  console.log('    $ init -Ip myProduction -t objects');
+});
+program.parse(process.argv);
+
+var productions = config.get('productions');
+var list = program.production;
+list.forEach(function(prod) {
+  if (Object.keys(productions).indexOf(prod) === -1) {
+    log.error('Production', prod, 'doesn\'t exist');
+  }
+});
+if (list.length) {
+  productions = _.pick(productions, list);
+}
+
+if (Object.keys(productions).length)
+  log.info('Initializing ElasticSearch');
+async.eachSeries(Object.keys(productions), function(prod, done) {
+  async.waterfall([
+    function(cb) {
+      log.info('Initializing ElasticSearch Index for Production', prod);
+      if (!program.init) return cb(null, true);
+      overview.initializeIndex(prod, program.drop, cb);
+    }, function(results, cb) {
+      var aggs = productions[prod].aggregations;
+      var list = program.type;
+      list.forEach(function(agg) {
+        if (Object.keys(aggs).indexOf(agg) === -1) {
+          log.warn('Aggregation', agg, 'doesn\'t exist in production', prod);
+        }
+      });
+      if (list.length) {
+        aggs = _.pick(aggs, list);
+      }
+      console.log(aggs);
+      async.eachSeries(Object.keys(aggs), function(agg, done) {
+        log.info('Initial Import of All',agg,'for Production', prod);
+        overview.aggregateAndIndexAll(prod, agg, done);
+      }, cb);
+    }
+  ], done);
+}, function(err) {
+  if (err) log.error(err.message);
+  process.exit(0);
+});

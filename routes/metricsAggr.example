@@ -1,0 +1,7 @@
+curl -XPUT http://localhost:3000/metrics/rcs/type/test
+curl -XPUT http://localhost:3000/metrics/rcs/type/test/31214
+
+
+curl -XGET -H "Content-Type: application/json" -d '{"options":{"metrics":["actual_imps"],"from":"2012-01-01","to":"2014-01-01"},"ids":["31214","31670"]}' http://localhost:3000/metrics/rcs/type/test
+
+curl -XGET -H "Content-Type: application/json" -d '{"options":{"metrics":["actual_imps"],"from":"2012-01-01","to":"2014-01-01"}}' http://localhost:3000/metrics/rcs/type/test/31214

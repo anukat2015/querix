@@ -1,0 +1,51 @@
+{
+	"productions": {
+		"test": {
+			"mysql": {
+				"host": "localhost",
+				"port": 3306,
+				"username": "root",
+				"password": "root",
+				"database": "test"
+			},
+			"elasticsearch": {
+				"host": "localhost",
+				"port": 9200,
+				"index": "test"
+			},
+			"rabbit": {
+				"host": "localhost",
+				"port": 5672,
+				"username": "guest",
+				"password": "guest",
+				"queue": "adlogix_rcs",
+				"bulk_size": 10
+			},
+			"aggregations": {
+	            "objects": {
+	                "listSQL": "sql/objects/get_objects.sql",
+	                "aggregationSQL": "sql/objects/aggs/"
+	            },
+	            "sub_objects": {
+	                "listSQL": "sql/sub_objects/get_sub_objects.sql",
+	                "aggregationSQL": "sql/sub_objects/aggs/",
+	                "updates": {
+	                    "object": "object_id"
+	                }
+	            }
+	        }
+		}
+	},
+	"api": {
+		"active": false,
+		"port": 3000
+	},
+	"log4js": {
+		"appenders": [
+			{"type": "console"}
+		],
+		"levels": {
+			"[all]": "INFO"
+		}
+	}
+}

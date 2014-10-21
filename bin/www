@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+var log = require('log4js').getLogger('Startup');
+var app = require('../app');
+var rabbit = require('../app-rabbit');
+var config = require('../config/config');
+
+var api = config.get('api');
+
+if (api && api.active) {
+  app.set('port', process.env.PORT || 3000);
+
+  var server = app.listen(app.get('port'), function() {
+    log.info('Express server listening on port ' + server.address().port);
+  });
+}
+
