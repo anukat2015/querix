@@ -1,7 +1,7 @@
 var should = require('should');
 var sinon = require('sinon');
 
-var Production = require('../../models/Production');
+var Production = require('../../src/models/Production');
 var prod;
 
 describe('Production', function() {

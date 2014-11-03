@@ -1,7 +1,8 @@
 {
-  "name": "elastic-api",
+  "name": "querix",
   "version": "0.1.0",
   "private": true,
+  "main": "index.js",
   "scripts": {
     "start": "node ./bin/www",
     "test": "make test"
@@ -28,6 +29,7 @@
   "devDependencies": {
     "mocha": "^1.21.4",
     "should": "^4.0.4",
-    "sinon": "^1.10.3"
+    "sinon": "^1.10.3",
+    "xunit-file": "0.0.5"
   }
 }

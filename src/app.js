@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var config = require('./config/config');
+var config = require('querix_utils/config');
 
 var routes = require('./routes/index');
 var overview = require('./routes/overview');
@@ -24,7 +24,6 @@ app.use(cookieParser());
 
 app.use('/', routes);
 app.use('/overview', overview);
-// Side project, commented
 //app.use('/metrics', metricsAggr);
 
 // catch 404 and forward to error handler

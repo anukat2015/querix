@@ -1,16 +1,6 @@
 #Elastic API
 
-Feeder API briding MySQL and ElasticSearch.
-
-This API can be used to index pre-aggregated documents in ElasticSearch.
-
-## Purpose
-If you have MySQL objects which properties are sums (or other aggregations) over very large quantities of data, you can use this API to create a single document in ElasticSearch containing the pre-aggregated data. These documents can then be easily retreived and filtered using the power of ElasticSearch.
-
-This API can be used to index pre-aggregated documents in ElasticSearch.
-
-## Purpose
-If you have MySQL objects which properties are sums (or other aggregations) over very large quantities of data, you can use this API to create a single document in ElasticSearch containing the pre-aggregated data. These documents can then be easily retreived and filtered using the power of ElasticSearch.
+API bridging mysql and elasticsearch. Performs aggregations on multiple tables, in order to store documents which can then be easily retrieved by the overviews.
 
 The API can be controlled either using a REST API, or via an AMQP server (i.e. RabbitMQ)
 
@@ -60,10 +50,10 @@ This command-line tool accepts multiple parameters, to show the possibilities, t
 
 Each production can subscribe to a RabbitMQ queue (see Configuration section).
 
-When an object should be updated, a new message should be sent to the queue, and have the following format :
+When a campaign should be updated, a new message should be sent to the queue, and have the following format :
 
     {
-        type: "object", // Type of the object (see configuration section)
+        type: "campaigns", // Type of the overview (e.g. Campaigns, Ads, DIP ...)
         id: 72 // ID of the object in MySQL
     }
 
@@ -73,25 +63,45 @@ This API works in a REST scheme
 
 #### Creating an index (not necessary if you have used `bin/init`)
 
-    GET /overview/:production/init
+    /overview/:production/init
 
 #### Indexing a single document
 
-    GET /overview/:production/index/:type/:id
+    /overview/:production/index/:type/:id
 
 Indexes a document of the given type with the given id in the given production.
-Documents linked with this document will also be indexed (see configuration section).
+Documents linked with this document will also be indexed.
 
 Example :
 
-    /overview/test/index/object/72
+    /overview/rcs/index/campaigns/72
 
 #### Indexing all documents
 
-    GET /overview/:production/index_all/:type
+    /overview/:production/index_all/:type
 
 Indexes all documents of the give type for the given production.
 Documents linked to document that are indexed this way will NOT be updated (for performance reasons).
+
+#### Indexing metrics for a single document following an aggregation scheme
+
+    /metrics/:production/type/:type/:id
+
+Indexes the metrics of a single document giving its :id and its associated :production following the aggregation scheme :type.
+
+Example :
+
+    /metrics/rcs/type/dip_inventory_metrics/31214
+
+#### Indexing metrics for all documents following an aggregation scheme
+
+    /metrics/:production/type/:type/
+
+Indexes the metrics of all documents giving their associated :production following the aggregation scheme :type.
+
+Example :
+
+    /metrics/rcs/type/dip_inventory_metrics
 
 ### Configuration
 
@@ -101,18 +111,18 @@ To configure the application, copy the `settings_examples.json` file to `setting
 
     {
         "productions": { // Each production is a key of the productions object
-            "test": {
+            "rcs": {
                 "mysql": { // MySQL Configuration
                     "host": "localhost",
                     "port": 3306,
                     "username": "root",
                     "password": "root",
-                    "database": "test"
+                    "database": "adlogix-rcs"
                 },
                 "elasticsearch": { // ElasticSearch server configuration
                     "host": "localhost",
                     "port": 9200,
-                    "index": "test"
+                    "index": "adlogix_rcs"
                 },
                 "rabbit": { // RabbitMQ queue to which the API will subscribe
                     "host": "localhost",
@@ -123,17 +133,17 @@ To configure the application, copy the `settings_examples.json` file to `setting
                     "bulk_size": 10 // Maximum number of concurrent indexation request per instance of the application (0 disables throttling)
                 },
                 "aggregations": { // Each overview type is a key of aggregations
-                    "objects": {
-                        "listSQL": "sql/objects/get_objects.sql", // This sql file lists the objects
-                        "aggregationSQL": "sql/objects/aggs/" // This folder contains files that perform aggregations that will hydrate the object
-                        "searchable_fields": ["name", "company"] // These fields will be appended a ".lowercase" subfield used for partial matching search
+                    "campaigns": {
+                        "listSQL": "sql/campaigns/getCampaigns.sql", // This sql file lists the objects
+                        "aggregationSQL": "sql/campaigns/aggs/", // This folder contains files that perform aggregations that will hydrate the object
+                        "searchable_fields": ["name", "order_company"] // These fields will be appended a ".lowercase" subfield used for partial matching search
                     },
-                    "sub_objects": {
-                        "listSQL": "sql/sub_objects/get_sub_objects.sql",
-                        "aggregationSQL": "sql/sub_objects/aggs/",
-                        "updates": { // This tells the application to update the object corresponding
-                                     // to the object_id of the sub_object when a sub_object is updated
-                            "object": "object_id"
+                    "dip": {
+                        "listSQL": "sql/dip/getDIPs.sql",
+                        "aggregationSQL": "sql/dip/aggs/",                       ],
+                        "updates": { // This tells the application to update the campaign corresponding
+                                     // to the user_campaign_id of the dip when a dip is updated
+                            "campaigns": "user_campaign_id"
                         }
                     }
                 }
@@ -154,7 +164,30 @@ To configure the application, copy the `settings_examples.json` file to `setting
         "newrelic": { // New Relic Configuration
             "license_key": "",
             "logging": "trace"
-        }
+        },
+        "metricsAggSchemes": [ // list of all the schemes used to aggregate the different metrics
+            {
+                "aggregateTo": {
+                    "name": "adlogix_users_campaigns_selections_conf",
+                    "id": "id"
+                },
+                "pathToMetrics":{
+                    "name": "adlogix_inventory",
+                    "id": "id",
+                    "parentLink": "user_campaign_selection_conf_id",
+                    "child": {
+                        "name": "adlogix_inventory_data",
+                        "parentLink": "inventory_id",
+                        "metrics": [
+                            "actual_imps",
+                            "budget_net"
+                        ],
+                        "dateRangeAttribute": "datetime"
+                    }
+                },
+                "aggregationName": "dip_inventory_metrics"
+            }
+        ]
     }
 
 #### SQL

@@ -20,12 +20,12 @@ var fakeCampaign = {
   advertiser_id: 1
 }
 
-var AggregationDAO = require('../../models/AggregationDAO.js');
-var config = require('../../config/config.js');
+var AggregationDAO = require('querix_utils/mysqlClient/AggregationDAO');
+var config = require('querix_utils/config');
 
 describe('AggregationDAO', function() {
   before(function() {
-    require('../../config/mysql').setConnection('test', {
+    require('querix_utils/mysql').setConnection('test', {
       query: function(query, params, cb) {
         if (typeof(params) === 'function')
           cb = params;
@@ -88,6 +88,6 @@ describe('AggregationDAO', function() {
     });
   })
   after(function() {
-    require('../../config/mysql').setConnection('test', null);
+    require('querix_utils/mysql').setConnection('test', null);
   });
 });

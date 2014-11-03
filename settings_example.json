@@ -1,17 +1,17 @@
 {
 	"productions": {
-		"test": {
+		"rcs": {
 			"mysql": {
 				"host": "localhost",
 				"port": 3306,
 				"username": "root",
 				"password": "root",
-				"database": "test"
+				"database": "adlogix-rcs"
 			},
 			"elasticsearch": {
 				"host": "localhost",
 				"port": 9200,
-				"index": "test"
+				"index": "adlogix_rcs"
 			},
 			"rabbit": {
 				"host": "localhost",
@@ -22,18 +22,36 @@
 				"bulk_size": 10
 			},
 			"aggregations": {
-	            "objects": {
-	                "listSQL": "sql/objects/get_objects.sql",
-	                "aggregationSQL": "sql/objects/aggs/"
-	            },
-	            "sub_objects": {
-	                "listSQL": "sql/sub_objects/get_sub_objects.sql",
-	                "aggregationSQL": "sql/sub_objects/aggs/",
-	                "updates": {
-	                    "object": "object_id"
-	                }
-	            }
-	        }
+				"campaigns": {
+					"listSQL": "sql/campaigns/getCampaigns.sql",
+					"aggregationSQL": "sql/campaigns/aggs/",
+					"searchable_fields": ["name", "order_company", "billing_company", "advertiser", "user", "credit_officer", "commercial_selection", "format", "format_type"]
+				},
+		        "dip": {
+		          	"listSQL": "sql/dip/getDIPs.sql",
+			        "aggregationSQL": "sql/dip/aggs/"
+		        },
+		        "sip": {
+		        	"listSQL": "sql/sip/getSIPs.sql",
+		          	"aggregationSQL": "sql/sip/aggs/"
+		        },
+		        "technical_products": {
+		        	"listSQL": "sql/technical_products/get_technical_products.sql",
+		        	"aggregationSQL": "sql/technical_products/aggs/"
+		        },
+		        "products": {
+		        	"listSQL": "sql/products/getProducts.sql",
+		        	"aggregationSQL": "sql/products/aggs/"
+		        },
+		        "ads": {
+		        	"listSQL": "sql/ads/getAds.sql",
+		        	"aggregationSQL": "sql/ads/aggs/"
+		        },
+		        "ads_by_campaigns": {
+		        	"listSQL": "sql/ads_by_campaigns/get_ads_by_campaigns.sql",
+		        	"aggregationSQL": "sql/ads_by_campaigns/aggs/"
+		        }
+			}
 		}
 	},
 	"api": {
@@ -47,5 +65,33 @@
 		"levels": {
 			"[all]": "INFO"
 		}
-	}
+	},
+	"newrelic": {
+		"name": "Elastic API",
+		"license_key": "",
+		"logging": "trace"
+	},
+	"metricsAggSchemes": [
+		{
+		  "aggregateTo": {
+		    "name": "adlogix_users_campaigns_selections_conf",
+		    "id": "id"
+		  },
+		  "pathToMetrics":{
+		    "name": "adlogix_inventory",
+		    "id": "id",
+		    "parentLink": "user_campaign_selection_conf_id",
+		    "child": {
+		      "name": "adlogix_inventory_data",
+		      "parentLink": "inventory_id",
+		      "metrics": [
+		        "actual_imps",
+		        "budget_net"
+		      ],
+		      "dateRangeAttribute": "datetime"
+		    }
+		  },
+		  "aggregationName": "dip_inventory_metrics"
+		}
+	]
 }

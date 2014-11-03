@@ -1,5 +1,5 @@
 var log = require('log4js').getLogger('app-rabbit');
-var config = require('./config/config');
+var config = require('querix_utils/config');
 
 var Overview = require('./consumers/Overview');
 var consumers = [];

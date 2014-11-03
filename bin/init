@@ -3,7 +3,7 @@ var log = require('log4js').getLogger('Initialize');
 var async = require('async');
 var _ = require('underscore');
 var program = require('commander');
-var config = require('../config/config');
+var config = require('querix/utils/config');
 var overview = require('../services/overview');
 
 function collect(val, memo) {
