@@ -3,7 +3,7 @@
 */
 
 var log = require('log4js').getLogger('Overview Service');
-var config = require('querix_utils/config');
+var config = require('querix-util/config');
 var cproductions = config.get('productions');
 
 var Production = require('../models/Production');

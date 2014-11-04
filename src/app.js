@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var config = require('querix_utils/config');
+var config = require('querix-util/config');
 
 var routes = require('./routes/index');
 var overview = require('./routes/overview');

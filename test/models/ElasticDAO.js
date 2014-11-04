@@ -21,7 +21,7 @@ describe('ElasticDAO', function() {
   });
   describe('#save', function() {
     it('should save a document on elastic', function(done) {
-      var ElasticDAO = require('querix_utils/elasticClient/ElasticDAO');
+      var ElasticDAO = require('querix-util/elasticClient/ElasticDAO');
       fakeRequest = {
         send: function(data) {
           this.data = data;
@@ -59,7 +59,7 @@ describe('ElasticDAO', function() {
 
   describe('#bulk', function() {
     it('should bulk send documents to elastic', function(done) {
-      var ElasticDAO = require('querix_utils/elasticClient/ElasticDAO');
+      var ElasticDAO = require('querix-util/elasticClient/ElasticDAO');
       fakeRequest = {
         send: function(data) {
           this.data = data;
@@ -96,7 +96,7 @@ describe('ElasticDAO', function() {
 
   describe('#putMapping', function() {
     it('should send the correct mapping', function(done) {
-      var ElasticDAO = require('querix_utils/elasticClient/ElasticDAO');
+      var ElasticDAO = require('querix-util/elasticClient/ElasticDAO');
       fakeRequest = {
         send: function(data) {
           this.data = data;
@@ -123,7 +123,7 @@ describe('ElasticDAO', function() {
 
   describe('#makeMapping', function() {
     it('should create the correct mapping', function() {
-      var ElasticDAO = require('querix_utils/elasticClient/ElasticDAO');
+      var ElasticDAO = require('querix-util/elasticClient/ElasticDAO');
       var dao = new ElasticDAO({
         host: 'localhost',
         port: 1111,
@@ -140,7 +140,7 @@ describe('ElasticDAO', function() {
 
   describe('#deleteMapping', function() {
     it('should delete the correct mapping', function(done) {
-      var ElasticDAO = require('querix_utils/elasticClient/ElasticDAO');
+      var ElasticDAO = require('querix-util/elasticClient/ElasticDAO');
       fakeRequest = {
         end: function(cb) {
           cb(null, {status: 200});
@@ -162,7 +162,7 @@ describe('ElasticDAO', function() {
 
   describe('#deleteIndex', function() {
     it('should delete the correct index', function(done) {
-      var ElasticDAO = require('querix_utils/elasticClient/ElasticDAO');
+      var ElasticDAO = require('querix-util/elasticClient/ElasticDAO');
       fakeRequest = {
         end: function(cb) {
           cb(null, {status: 200});
@@ -184,7 +184,7 @@ describe('ElasticDAO', function() {
 
   describe('#putAnalyzer', function() {
     it('should put an analyzer in the right index', function(done) {
-      var ElasticDAO = require('querix_utils/elasticClient/ElasticDAO');
+      var ElasticDAO = require('querix-util/elasticClient/ElasticDAO');
       fakeRequest = {
         send: function(data) {
           this.data = data;

@@ -3,9 +3,9 @@ var sinon = require('sinon');
 
 describe('mysql', function() {
   before(function() {
-    var config = require('querix_utils/config');
+    var config = require('querix-util/config');
     var mysql = require('mysql');
-    require('querix_utils/mysql');
+    require('querix-util/mysql');
     sinon.stub(config, 'get', function(stuff) {
       return {
         "test": {
@@ -22,12 +22,12 @@ describe('mysql', function() {
     sinon.stub(mysql, 'createConnection', function(data) {
       return data;
     });
-    require('querix_utils/mysql').resetConnections();
+    require('querix-util/mysql').resetConnections();
   });
 
   it('should return a connection to localhost:3306/test', function() {
-    var config = require('querix_utils/config');
-    var mysql = require('querix_utils/mysql');
+    var config = require('querix-util/config');
+    var mysql = require('querix-util/mysql');
 
     var connection = mysql('test');
     connection.should.exist;
@@ -39,7 +39,7 @@ describe('mysql', function() {
   });
 
   after(function() {
-    var config = require('querix_utils/config');
+    var config = require('querix-util/config');
     var mysql = require('mysql');
 
     //sinon.assert.calledOnce(config.get);
@@ -47,6 +47,6 @@ describe('mysql', function() {
 
     mysql.createConnection.restore();
     config.get.restore();
-    require('querix_utils/mysql').resetConnections();
+    require('querix-util/mysql').resetConnections();
   });
 });

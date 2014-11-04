@@ -1,6 +1,6 @@
 var amqp = require('amqp');
 var service = require('../services/overview');
-var rabbit = require('querix_utils/rabbit');
+var rabbit = require('querix-util/rabbit');
 
 var log = require('log4js').getLogger('Overview Consumer');
 

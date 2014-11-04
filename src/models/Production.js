@@ -4,8 +4,8 @@
 
 var log = require('log4js').getLogger('Production');
 var async = require('async');
-var ElasticDAO = require('querix_utils/elasticClient/ElasticDAO');
-var AggregationDAO = require('querix_utils/mysqlClient/AggregationDAO');
+var ElasticDAO = require('querix-util/elasticClient/ElasticDAO');
+var AggregationDAO = require('querix-util/mysqlClient/AggregationDAO');
 var _ = require('underscore');
 
 /**

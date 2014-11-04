@@ -2,7 +2,7 @@
 var log = require('log4js').getLogger('Startup');
 var app = require('../app');
 var rabbit = require('../app-rabbit');
-var config = require('querix_utils/config');
+var config = require('querix-util/config');
 
 var api = config.get('api');
 
